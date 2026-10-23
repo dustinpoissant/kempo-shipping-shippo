@@ -31,7 +31,7 @@ jobs:
       # .npmrc) makes a bare `npm install <peer-name>` silently no-op; --no-legacy-peer-deps forces a real install and --force
       # gets past the ERESOLVE that resolution then hits on the two peer edges to kempo-server.
       - name: Install the host for the test gate
-        run: npm install --no-save --no-legacy-peer-deps --force kempo@latest kempo-ui@latest kempo-server@latest kempo-commerce@latest kempo-products@latest kempo-payments@latest kempo-credits@latest kempo-store-credit@latest kempo-tax@latest kempo-shipping@latest
+        run: npm install --no-save --save-dev --no-legacy-peer-deps --force kempo@latest kempo-ui@latest kempo-server@latest kempo-commerce@latest kempo-products@latest kempo-payments@latest kempo-credits@latest kempo-store-credit@latest kempo-tax@latest kempo-shipping@latest
 
       - name: Run tests
         run: npm test
