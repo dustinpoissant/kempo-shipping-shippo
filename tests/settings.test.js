@@ -58,10 +58,10 @@ test('the key is a secret setting, every setting the code writes is declared, th
   assert.ok(existsSync(path.join(root, 'hooks', 'rates.js')));
 });
 
-test('the files the package says it ships exist, the tab fragment names this package, and it stays private until released', async () => {
+test('the files the package says it ships exist, the tab fragment names this package, and it is not private', async () => {
   const pkg = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
   for(const entry of pkg.files) assert.ok(existsSync(path.join(root, entry)), `${entry} exists`);
-  assert.equal(pkg.private, true);
+  assert.equal(pkg.private, undefined);
   const tab = await readFile(path.join(root, 'admin', 'shipping-tab.global.html'), 'utf8');
   assert.match(tab, /location="shipping-admin-tabs"/);
   assert.match(tab, /location="shipping-admin-scripts"/);
