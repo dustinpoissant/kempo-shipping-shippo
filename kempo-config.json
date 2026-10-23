@@ -1,0 +1,51 @@
+{
+  "docs": "https://github.com/dustinpoissant/kempo-shipping-shippo#readme",
+  "git": "https://github.com/dustinpoissant/kempo-shipping-shippo",
+  "public-scope": "shippo",
+  "schema": "./server/db/schema.js",
+  "dependencies": [
+    "kempo-commerce",
+    "kempo-shipping"
+  ],
+  "hooks": {
+    "kempo-shipping:rates": "./hooks/rates.js"
+  },
+  "settings": [
+    {
+      "name": "shippo_api_key",
+      "value": "",
+      "type": "secret",
+      "description": "Shippo API key (a test key to try it, a production key for real rates). Encrypted at rest and never sent to a browser"
+    },
+    {
+      "name": "shippo_services",
+      "value": "USPS:usps_ground_advantage,USPS:usps_priority,USPS:usps_priority_express,UPS:ups_ground,UPS:ups_3_day_select,UPS:ups_second_day_air,UPS:ups_next_day_air_saver,UPS:ups_next_day_air,FedEx:fedex_ground,FedEx:fedex_home_delivery,FedEx:fedex_express_saver,FedEx:fedex_2_day,FedEx:fedex_standard_overnight,FedEx:fedex_priority_overnight",
+      "type": "string",
+      "description": "The services offered to customers, as carrier:service pairs separated by commas, using Shippo's provider and service level token (USPS:usps_priority). Only carriers on your Shippo account return rates"
+    },
+    {
+      "name": "shippo_other_services",
+      "value": "false",
+      "type": "boolean",
+      "description": "Whether to also offer any other service Shippo returns (other carriers, and services not in the list above)"
+    },
+    {
+      "name": "shippo_from_email",
+      "value": "",
+      "type": "string",
+      "description": "An email address for the Ship From address. Shippo will not make a label without one, and carriers may send tracking to it"
+    },
+    {
+      "name": "shippo_residential",
+      "value": "true",
+      "type": "boolean",
+      "description": "Whether orders are priced as going to a home, which carriers charge a surcharge for. Turn off if you mostly ship to businesses"
+    },
+    {
+      "name": "shippo_cache_minutes",
+      "value": "60",
+      "type": "number",
+      "description": "How long a price from Shippo is reused for the same route, weight and size. Keeps checkout fast and keeps the number of rate requests (which Shippo can charge for) down"
+    }
+  ]
+}

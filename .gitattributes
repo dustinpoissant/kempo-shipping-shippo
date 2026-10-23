@@ -1,0 +1,4 @@
+# Normalise every text file to LF in the repository, and check it out with the
+# platform's native endings, so git does not report a change on Windows where the
+# content is identical.
+* text=auto

@@ -1,0 +1,39 @@
+{
+  "name": "kempo-shipping-shippo",
+  "version": "0.1.0",
+  "description": "Carrier rates for kempo-shipping through Shippo: USPS, UPS and FedEx prices for each parcel from one API key, and the customer chooses the service at checkout.",
+  "license": "MIT",
+  "author": "Dustin Poissant",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "files": [
+    "admin",
+    "hooks",
+    "public",
+    "server",
+    "install.js",
+    "update.js",
+    "uninstall.js",
+    "kempo-config.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dustinpoissant/kempo-shipping-shippo.git"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2"
+  },
+  "peerDependencies": {
+    "kempo": ">=4.7.0",
+    "kempo-commerce": ">=0.1.0",
+    "kempo-shipping": ">=0.0.0",
+    "kempo-ui": ">=0.6.0"
+  },
+  "exports": {
+    "./install": "./install.js",
+    "./update": "./update.js",
+    "./uninstall": "./uninstall.js"
+  }
+}
