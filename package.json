@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "description": "Carrier rates for kempo-shipping through Shippo: USPS, UPS and FedEx prices for each parcel from one API key, and the customer chooses the service at checkout.",
   "license": "MIT",
-  "author": "Dustin Poissant",
+  "author": "Dustin Poissant <dustinpoissant@gmail.com>",
   "type": "module",
   "scripts": {
     "test": "node --test"
