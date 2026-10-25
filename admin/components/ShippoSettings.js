@@ -43,18 +43,19 @@ export class ShippoSettings extends ShadowComponent {
 
   connectedCallback(){
     super.connectedCallback();
-    this.screen = this.closest('k-shipping-settings');
-    this.origin = this.screen?.origin ?? null;
-    this.screen?.addEventListener('origin-change', this.changeOrigin);
-    this.load();
+    this.shippingSettings = this.closest('k-shipping-settings');
+    this.origin = this.shippingSettings?.origin ?? null;
+    this.shippingSettings?.addEventListener('origin-change', this.changeOrigin);
+    // The shipping settings announce the tab when it is first opened, so an unopened carrier makes no requests.
+    this.closest('k-shipping-tab')?.addEventListener('shown', this.load, { once: true });
   }
 
   disconnectedCallback(){
     super.disconnectedCallback();
-    this.screen?.removeEventListener('origin-change', this.changeOrigin);
+    this.shippingSettings?.removeEventListener('origin-change', this.changeOrigin);
   }
 
-  /* The Ship From address as saved on the General tab, which the screen announces when it loads and when it is saved. */
+  /* The Ship From address as saved on the General tab, which the shipping settings announce when it loads and when it is saved. */
   changeOrigin = event => {
     this.origin = event.detail;
   };
