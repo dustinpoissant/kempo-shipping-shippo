@@ -15,3 +15,8 @@ All notable changes to `kempo-shipping-shippo` are documented in this file.
 - **A Shippo tab on the Shipping page:** the API token (replace-only, stored encrypted, never sent back), an optional email for the Ship From address (Shippo needs one to make a label; empty uses the address the site sends its emails from, the Email from setting), the services by carrier, other services, residential pricing, how long prices are kept, and **Test Shippo**, which lists every rate Shippo returned.
 - **A Shippo tab on the admin order page** (through kempo-commerce's `commerce-admin-order-tabs`): get every carrier's price for each box of the order, buy a label, print it again (a 4x6 PDF), see the tracking number, cost and purchase time, open the carrier's tracking page, and ask for a refund of an unused label. New `kempoShippoLabel` table (created on install and update), routes under `/shippo/api/orders/:id/`, and an order-history line for each purchase and refund request.
 - Checked against a Shippo test token: shipments, rates, a USPS label, and its refund. A purchase Shippo answers with 201 and `status: "ERROR"` is reported with its messages, and a shipment that already has a label from this site cannot be bought twice.
+
+## [0.1.3] - 2026-10-26
+### Changed
+- The labels and the rates for an order are kempo-ui tables. Print label opens the label, and Track, Ask for refund and Buy label are row controls.
+- Requires kempo 4.9.7 (the admin lists use kempo-ui tables).

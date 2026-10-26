@@ -1,4 +1,6 @@
 import ShadowComponent from '/kempo-ui/components/ShadowComponent.js';
+import '/kempo-ui/components/Table.js';
+import './OrderAction.js';
 import { html, nothing } from '/kempo-ui/lit-all.min.js';
 import '/kempo-ui/components/Spinner.js';
 import '/kempo-ui/components/Icon.js';
@@ -161,24 +163,18 @@ export class OrderShippo extends ShadowComponent {
   */
   mode = mode => (mode === 'test' ? html`<span class="tc-warning">Test</span>` : nothing);
 
+  /* A row's track or refund action, from the labels table. */
+  labelAction = ({ action, record }) => {
+    if(action === 'track') window.open(record.trackingUrl || record.publicTrackingUrl, '_blank', 'noopener');
+    else if(action === 'refund') this.refund(record);
+  };
+
+
   renderLabels(){
     const { labels } = this.data;
     if(!labels.length) return html`<p class="tc-muted mb">No label has been bought for this order.</p>`;
     return html`
-      <table class="mb">
-        <thead><tr><th>Service</th><th>Tracking number</th><th>Cost</th><th>Bought</th><th></th></tr></thead>
-        <tbody>${labels.map(label => html`<tr>
-          <td>${label.carrier} ${label.serviceLabel} ${this.mode(label.mode)}</td>
-          <td>${label.trackingCode}${label.refundStatus ? html`<br><span class="tc-muted">Refund ${label.refundStatus}</span>` : nothing}</td>
-          <td>${this.money(label.cost)}</td>
-          <td><k-timestamp value=${new Date(label.purchasedAt).toISOString()}></k-timestamp></td>
-          <td>
-            <a class="btn mb" href=${label.labelPdfUrl || label.labelUrl} target="_blank" rel="noopener">Print label</a>
-            ${label.trackingUrl || label.publicTrackingUrl ? html`<a class="btn mb" href=${label.trackingUrl || label.publicTrackingUrl} target="_blank" rel="noopener">Track</a>` : nothing}
-            ${label.refundStatus ? nothing : html`<button class="btn mb" @click=${() => this.refund(label)}>Ask for refund</button>`}
-          </td>
-        </tr>`)}</tbody>
-      </table>
+      <k-table .records=${labels.map(label => ({ ...label, actions: [label.trackingUrl || label.publicTrackingUrl ? 'track' : null, label.refundStatus ? null : 'refund'].filter(Boolean), _url: label.labelPdfUrl || label.labelUrl, trackLabel: 'Track', refundLabel: 'Ask for refund' }))} .fields=${[{ name: 'service', label: 'Service', size: 240, editable: false, calculator: label => `${label.carrier} ${label.serviceLabel} ${this.mode(label.mode)}` }, { name: 'trackingCode', label: 'Tracking number', editable: false, calculator: label => `${label.trackingCode}${label.refundStatus ? ` · Refund ${label.refundStatus}` : ''}` }, { name: 'cost', label: 'Cost', size: 120, editable: false, calculator: label => this.money(label.cost) }, { name: 'purchasedAt', label: 'Bought', size: 190, editable: false, formatter: value => new Date(value).toLocaleString() }]} @orderAction=${event => this.labelAction(event.detail)}><kc-tc-open slot="after" target="_blank">Print label</kc-tc-open><k-shippo-order-action slot="after" action="track" label="Track"></k-shippo-order-action><k-shippo-order-action slot="after" action="refund" label="Ask for refund"></k-shippo-order-action></k-table>
     `;
   }
 
@@ -191,15 +187,7 @@ export class OrderShippo extends ShadowComponent {
     const { quote, buying } = this.rows[index];
     if(!quote) return nothing;
     return html`
-      <table class="mb">
-        <thead><tr><th>Service</th><th>Price</th><th>Time</th><th></th></tr></thead>
-        <tbody>${quote.rates.map(rate => html`<tr>
-          <td>${rate.carrier} ${rate.label}${rate.chosen ? html` <span class="tc-success">Customer's choice</span>` : nothing}</td>
-          <td>${this.money(rate.cents)}</td>
-          <td>${rate.days ? `${rate.days} business day${rate.days === 1 ? '' : 's'}` : html`<span class="tc-muted">Not given</span>`}</td>
-          <td><button class="primary" ?disabled=${this.locked || Boolean(buying)} @click=${() => this.buy(index, rate)}>${buying === rate.id ? 'Buying…' : 'Buy label'}</button></td>
-        </tr>`)}</tbody>
-      </table>
+      <k-table .records=${quote.rates.map(rate => ({ ...rate, actions: this.locked ? [] : ['buy'], buyLabel: buying === rate.id ? 'Buying…' : 'Buy label' }))} .fields=${[{ name: 'service', label: 'Service', editable: false, calculator: rate => `${rate.carrier} ${rate.label}${rate.chosen ? ' · Customer\'s choice' : ''}` }, { name: 'price', label: 'Price', size: 120, editable: false, calculator: rate => this.money(rate.cents) }, { name: 'time', label: 'Time', size: 180, editable: false, calculator: rate => rate.days ? `${rate.days} business day${rate.days === 1 ? '' : 's'}` : 'Not given' }]} @orderAction=${event => { if(!buying) this.buy(index, event.detail.record); }}><k-shippo-order-action slot="after" action="buy" label="Buy label"></k-shippo-order-action></k-table>
       ${quote.messages?.length ? html`<p class="tc-muted mb">${quote.messages.map(message => `${message.carrier ? `${message.carrier}: ` : ''}${message.message}`).join(' ')}</p>` : nothing}
     `;
   }
