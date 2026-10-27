@@ -6,6 +6,10 @@ All notable changes to `kempo-shipping-shippo` are documented in this file.
 
 ### Changed
 
+- The Shippo order tab is a plain `k-tab` and `k-tab-content` on the order page, and reloads when the order changes.
+
+- The Shippo tab is a plain `k-tab` and `k-tab-content` on the shipping page (`#shippo`). The component reads the Ship From address from the shipping settings when its tab is first shown, and listens on `#shipping` for changes.
+
 - **One click is one purchase.** The first click on a Buy label locks every Buy button before the confirmation opens and keeps them locked for a moment after, so a double click is treated as one. The server also locks a shipment while it is being bought, so two requests for it at once buy once (the second is refused with "This label is already being bought").
 - **Buying a second label for an order asks first:** when the order already has a label that was not refunded, the confirmation says so and asks if you are sure you want a second one (an order with two boxes has two labels, each bought on its own).
 

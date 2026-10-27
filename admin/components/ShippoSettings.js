@@ -43,16 +43,19 @@ export class ShippoSettings extends ShadowComponent {
 
   connectedCallback(){
     super.connectedCallback();
-    this.shippingSettings = this.closest('k-shipping-settings');
-    this.origin = this.shippingSettings?.origin ?? null;
-    this.shippingSettings?.addEventListener('origin-change', this.changeOrigin);
-    // The shipping settings announce the tab when it is first opened, so an unopened carrier makes no requests.
-    this.closest('k-shipping-tab')?.addEventListener('shown', this.load, { once: true });
+    this.shippingPage = this.closest('#shipping');
+    this.shippingPage?.addEventListener('origin-change', this.changeOrigin);
+    // The page opens each carrier's tab on first show, so an unopened carrier makes no requests.
+    const pane = this.closest('k-tab-content');
+    if(!pane || pane.active) this.showTab();
+    else this.closest('k-tabs')?.addEventListener('tabfirstshown', ({ detail }) => {
+      if(detail.tab === pane.name) this.showTab();
+    });
   }
 
   disconnectedCallback(){
     super.disconnectedCallback();
-    this.shippingSettings?.removeEventListener('origin-change', this.changeOrigin);
+    this.shippingPage?.removeEventListener('origin-change', this.changeOrigin);
   }
 
   /* The Ship From address as saved on the General tab, which the shipping settings announce when it loads and when it is saved. */
@@ -69,6 +72,17 @@ export class ShippoSettings extends ShadowComponent {
   /*
     Loading and saving
   */
+
+  showTab = () => {
+    this.loadOrigin();
+    this.load();
+  };
+
+  /* The Ship From address as saved, for the first show; changes after that come as origin-change. */
+  loadOrigin = async () => {
+    const settings = await fetch('/shipping/api/settings', { credentials: 'same-origin' }).then(response => response.json());
+    this.origin = settings.origin ?? null;
+  };
 
   load = async () => {
     try {

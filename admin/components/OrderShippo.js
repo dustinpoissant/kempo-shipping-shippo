@@ -14,7 +14,7 @@ import { loadFormat } from '/commerce/utils/format.js';
 
     <k-shippo-order></k-shippo-order>
 
-  It is the content of a `k-commerce-order-tab` that admin/order-tab.global.html puts on the page. It lists the labels already
+  It is the content of a tab that admin/order-tab.global.html adds to the order page. It reloads when the order changes. It lists the labels already
   bought for the order (print again, tracking number, what it cost and when, a button to the carrier's tracking page, and a refund
   request for one that was not used) and lets staff buy more: each box the order was packed into starts as a row to price (its
   size and weight can be changed), "Get prices" asks Shippo for every carrier's price, and "Buy" buys one. Nothing is bought until
@@ -60,6 +60,7 @@ export class OrderShippo extends ShadowComponent {
   connectedCallback(){
     super.connectedCallback();
     this.orderId = new URLSearchParams(location.search).get('id') ?? '';
+    this.closest('#order')?.addEventListener('orderChanged', this.load);
     this.load();
   }
 
